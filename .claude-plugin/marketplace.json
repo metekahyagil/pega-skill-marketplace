@@ -1,0 +1,17 @@
+{
+  "name": "pega-knowledge-buddy-skills",
+  "displayName": "Pega Knowledge Buddy Skills",
+  "description": "Automated content creation workflow for Pega Knowledge Buddy applications. Create, author, and ingest knowledge base articles with support for text and file content, collection/data source configuration, and access control.",
+  "version": "1.0.0",
+  "publisher": "Mete Kahyagil",
+  "category": "productivity",
+  "tags": [
+    "pega",
+    "knowledge-management",
+    "content-creation",
+    "automation",
+    "enterprise"
+  ],
+  "homepage": "https://github.com/metekahyagil/pega-skill-marketplace",
+  "license": "MIT"
+}
