@@ -2,117 +2,142 @@
 
 A collection of Claude Code skills for Pega platform development and automation.
 
-## Skills
+## Available Skills
 
-### create-knowledge-content
+| Skill | Description |
+|-------|-------------|
+| [create-knowledge-content](./skills/create-knowledge-content/) | Automated workflow for creating knowledge base content in Pega Knowledge Buddy |
 
-Automated workflow for creating knowledge base content articles in Pega Knowledge Buddy applications.
+## Prerequisites
 
-**Features:**
-- ✅ Complete end-to-end content creation workflow
-- ✅ Support for both text and file content (PDF, DOCX, TXT, MD)
-- ✅ Collection and data source configuration
-- ✅ Access control and role management
-- ✅ Chunking configuration for text content
-- ✅ Verified working implementation with successful test cases
+1. **Claude Code** - Download from [claude.ai/code](https://claude.ai/code)
 
-**Use Cases:**
-- Creating new knowledge base articles
-- Ingesting documentation and policies
-- Uploading documents for automatic text extraction
-- Managing content access permissions
+2. **Pega DX MCP Server** - Install globally:
+   ```bash
+   npm install -g @marco-looy/pega-dx-mcp
+   ```
 
-**Requirements:**
-- Pega Knowledge Buddy application installed
-- Pega DX MCP Server configured and running
-- Valid OAuth2 credentials for Pega instance
+3. **Pega Instance** - Active Pega Infinity instance with DX API enabled
 
 ## Installation
 
-### Using Claude Code
+### Step 1: Configure MCP Server
 
-1. **Install as Plugin** (Recommended):
-   ```bash
-   # In Claude Code, add this repository as a plugin source
-   # The skill will be automatically available
-   ```
+Add Pega DX MCP Server to Claude Code configuration file:
 
-2. **Or Copy to Project**:
-   ```bash
-   # Copy the skill directory to your project
-   cp -r skills/create-knowledge-content /path/to/your/project/.claude/skills/
-   ```
+**Location**:
+- Linux/Mac: `~/.config/claude-code/mcp_settings.json`
+- Windows: `%APPDATA%/claude-code/mcp_settings.json`
 
-### Prerequisites
-
-You must have the [Pega DX MCP Server](https://github.com/marco-looy/pega-dx-mcp) installed and configured:
-
-```bash
-npm install -g @marco-looy/pega-dx-mcp
+**Configuration**:
+```json
+{
+  "mcpServers": {
+    "pega-dx-mcp": {
+      "command": "pega-dx-mcp",
+      "env": {
+        "PEGA_BASE_URL": "https://your-pega-instance.com",
+        "PEGA_CLIENT_ID": "your-oauth-client-id",
+        "PEGA_CLIENT_SECRET": "your-oauth-client-secret",
+        "PEGA_API_VERSION": "v2"
+      }
+    }
+  }
+}
 ```
 
-Configure your `.env` file:
+Restart Claude Code after adding the configuration.
+
+### Step 2: Install Skills from Marketplace
+
+**Option A: Install as User Skills** (Available in all projects)
+
 ```bash
-PEGA_BASE_URL=https://your-pega-instance.com
-PEGA_CLIENT_ID=your-oauth-client-id
-PEGA_CLIENT_SECRET=your-oauth-client-secret
-PEGA_API_VERSION=v2
+# Clone the marketplace
+git clone https://github.com/metekahyagil/pega-skill-marketplace.git
+
+# Copy skills to user directory
+cp -r pega-skill-marketplace/skills/* ~/.claude/skills/
+```
+
+**Option B: Install as Project Skills** (Available only in specific project)
+
+```bash
+# Navigate to your project directory
+cd /path/to/your/project
+
+# Clone the marketplace
+git clone https://github.com/metekahyagil/pega-skill-marketplace.git
+
+# Copy skills to project
+cp -r pega-skill-marketplace/skills/* .claude/skills/
+```
+
+### Step 3: Verify Installation
+
+In Claude Code:
+```
+# List available skills
+/skills
+
+# Test a skill
+/create-knowledge-content
 ```
 
 ## Usage
 
-Once installed, invoke the skill in Claude Code:
+Skills can be invoked in two ways:
 
+**1. Direct Command:**
 ```
 /create-knowledge-content
 ```
 
-Or use the skill programmatically when users request:
-- "Create a new article about X"
-- "Add content to the knowledge base"
-- "Upload this document to the knowledge base"
+**2. Natural Language:**
+```
+"Create a new article about Model Context Protocol in the knowledge base"
+"Upload this policy document to the knowledge base"
+```
 
-The skill will guide you through:
-1. Verifying Pega connection
-2. Selecting collection and data source
-3. Providing content (text or file)
-4. Configuring access permissions
-5. Submitting for ingestion
-
-## Verified Test Cases
-
-This skill has been thoroughly tested with successful ingestion:
-
-- **KB-1055**: DOCX file → Resolved-Published ✅
-- **KB-1056**: MD file → Resolved-Published ✅
+Claude will automatically select and use the appropriate skill.
 
 ## Contributing
 
-Contributions are welcome! Please:
+To contribute a new skill:
 
 1. Fork this repository
-2. Create a feature branch
-3. Test your changes thoroughly
-4. Submit a pull request with clear description
+2. Create your skill in `skills/your-skill-name/`
+   - Required: `SKILL.md` (skill definition)
+   - Recommended: `README.md` (user documentation)
+3. Test thoroughly with real Pega instances
+4. Update this README to list your skill
+5. Submit a pull request
+
+### Skill Structure
+
+```
+skills/
+└── your-skill-name/
+    ├── SKILL.md          # Required: Skill definition
+    ├── README.md         # Recommended: User guide
+    └── references/       # Optional: Supporting docs
+```
 
 ## Support
 
-For issues or questions:
-- Open an issue on GitHub
-- Provide relevant case IDs and error messages
-- Include your Pega version and configuration
+- **Issues**: [GitHub Issues](https://github.com/metekahyagil/pega-skill-marketplace/issues)
+- **Questions**: [GitHub Discussions](https://github.com/metekahyagil/pega-skill-marketplace/discussions)
+
+When reporting issues, include:
+- Skill name
+- Error messages
+- Pega version
+- Relevant case IDs
 
 ## License
 
 MIT
 
-## Credits
-
-Created for use with:
-- [Pega DX MCP Server](https://github.com/marco-looy/pega-dx-mcp) by Marco Looy
-- [Claude Code](https://claude.ai/code) by Anthropic
-- Pega Knowledge Buddy application
-
 ---
 
-**Note**: This is an experimental project. Not an official Pegasystems product.
+**Disclaimer**: This is an experimental community project. Not an official Pegasystems product.
