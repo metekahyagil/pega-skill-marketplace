@@ -1,28 +1,29 @@
 {
-  "name": "pega-knowledge-buddy-skills",
+  "name": "pega-skill-marketplace",
   "owner": {
     "name": "Mete Kahyagil",
     "email": "mete.kahyagil@example.com"
   },
   "metadata": {
-    "description": "Automated content creation workflow for Pega Knowledge Buddy applications. Create, author, and ingest knowledge base articles with support for text and file content, collection/data source configuration, and access control.",
+    "description": "A comprehensive collection of Claude Code skills for Pega platform development, automation, and integration. Covers Knowledge Buddy, case management, data integration, and more.",
     "version": "1.0.0",
     "homepage": "https://github.com/metekahyagil/pega-skill-marketplace",
     "license": "MIT",
     "category": "productivity",
     "tags": [
       "pega",
-      "knowledge-management",
-      "content-creation",
+      "enterprise",
       "automation",
-      "enterprise"
+      "workflow",
+      "case-management",
+      "knowledge-management"
     ]
   },
   "plugins": [
     {
-      "name": "pega-knowledge-buddy-skills",
-      "description": "Skills for Pega Knowledge Buddy content creation and management",
-      "source": "./",
+      "name": "pega-knowledge-buddy",
+      "description": "Skills for Pega Knowledge Buddy application - content creation, ingestion, and knowledge base management",
+      "source": "./skills/knowledge-buddy",
       "strict": false,
       "skills": [
         "./create-knowledge-content"

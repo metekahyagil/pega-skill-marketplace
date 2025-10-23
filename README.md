@@ -4,9 +4,21 @@ A collection of Claude Code skills for Pega platform development and automation.
 
 ## Available Skills
 
+### Knowledge Buddy
+
+Skills for Pega Knowledge Buddy application - content creation, ingestion, and knowledge base management.
+
 | Skill | Description |
 |-------|-------------|
-| [create-knowledge-content](./skills/create-knowledge-content/) | Automated workflow for creating knowledge base content in Pega Knowledge Buddy |
+| [create-knowledge-content](./skills/knowledge-buddy/create-knowledge-content/) | Automated workflow for creating knowledge base content articles |
+
+### Coming Soon
+
+More skill categories for Pega platform features including:
+- Case Management
+- Data Integration
+- UI Automation
+- Testing & Quality Assurance
 
 ## Prerequisites
 
@@ -115,21 +127,50 @@ Claude will automatically select and use the appropriate skill.
 To contribute a new skill:
 
 1. Fork this repository
-2. Create your skill in `skills/your-skill-name/`
+2. Choose or create a category under `skills/` (e.g., `knowledge-buddy`, `case-management`)
+3. Create your skill in `skills/category-name/your-skill-name/`
    - Required: `SKILL.md` (skill definition)
    - Recommended: `README.md` (user documentation)
-3. Test thoroughly with real Pega instances
-4. Update this README to list your skill
-5. Submit a pull request
+4. Update `.claude-plugin/marketplace.json` to include your skill:
+   - Add to existing plugin if same category
+   - Create new plugin entry if new category
+5. Test thoroughly with real Pega instances
+6. Update this README to list your skill under appropriate category
+7. Submit a pull request
 
-### Skill Structure
+### Repository Structure
 
 ```
 skills/
-└── your-skill-name/
-    ├── SKILL.md          # Required: Skill definition
-    ├── README.md         # Recommended: User guide
-    └── references/       # Optional: Supporting docs
+├── knowledge-buddy/          # Category: Knowledge Buddy skills
+│   └── create-knowledge-content/
+│       ├── SKILL.md          # Required: Skill definition
+│       ├── README.md         # Recommended: User guide
+│       └── references/       # Optional: Supporting docs
+├── case-management/          # Category: Case Management skills
+│   └── your-skill-name/
+└── data-integration/         # Category: Data Integration skills
+    └── your-skill-name/
+```
+
+### Adding a New Category
+
+When creating a new skill category, update `.claude-plugin/marketplace.json`:
+
+```json
+{
+  "plugins": [
+    {
+      "name": "pega-your-category",
+      "description": "Skills for [category description]",
+      "source": "./skills/your-category",
+      "strict": false,
+      "skills": [
+        "./your-skill-name"
+      ]
+    }
+  ]
+}
 ```
 
 ## Support
