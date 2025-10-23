@@ -62,15 +62,51 @@ mcp__pega-dx-mcp__get_list_data_view({
 - Store `Name`, `pyID`, and compute `pzInsKey` for the selected data source
 - `pzInsKey` format: `"PEGAFW-QNA-WORK <pyID>"` (e.g., "PEGAFW-QNA-WORK SRC-1001")
 
-## Step 3: Present Options to User
+## Step 3: Query Available Access Roles
 
-Use the `AskUserQuestion` tool to let the user select:
+Access roles control who can view and access the content in the knowledge base.
+
+```javascript
+mcp__pega-dx-mcp__get_list_data_view({
+  dataViewID: "D_BuddyAccessRoleList",
+  query: {
+    select: [
+      { field: "AccessRoleName" },
+      { field: "pyLabel" }
+    ]
+  },
+  paging: { pageSize: 100 }
+})
+```
+
+**Returns:** List of available access roles with:
+- `AccessRoleName` - The role identifier (e.g., "KnowledgeBuddy:Public")
+- `pyLabel` - Display name (e.g., "Knowledge buddy public")
+
+**Common Roles:**
+| Access Role                      | Label                   | Purpose                    |
+|----------------------------------|-------------------------|----------------------------|
+| KnowledgeBuddy:Public            | Knowledge buddy public  | Public access              |
+| KnowledgeBuddy:Internal          | Internal                | Internal users only        |
+| KnowledgeBuddy:Author            | Knowledge buddy author  | Content authors            |
+| KnowledgeBuddy:BuddyManager      | Knowledge buddy manager | Knowledge base managers    |
+| KnowledgeBuddy:DataSourceManager | Data source manager     | Data source administrators |
+| KnowledgeBuddy:Admin             | Buddy administrator     | Full administrative access |
+
+**What to capture:**
+- Store all available `AccessRoleName` values for user selection
+- User can select **one or more** access roles
+- If no selection made, default to "KnowledgeBuddy:Public"
+
+## Step 4: Present Options to User
+
+After querying all three data sources, use the `AskUserQuestion` tool to let the user select:
 1. Which collection to use (from Step 1 results)
 2. Which data source to use (from Step 2 results, optionally filtered by selected collection)
-3. Content details (title, abstract, content text or file path)
+3. Which access role(s) to assign (from Step 3 results, multi-select enabled)
 
-**Tip:** You can ask all questions in a single `AskUserQuestion` call (supports up to 4 questions).
+**Note:** Access role selection will be part of the user input flow in Step 2 (02-user-input.md).
 
 ## Next Step
 
-After gathering user selections, proceed to **[02-create-and-configure.md](./02-create-and-configure.md)** to create the case and configure it.
+After gathering available data, proceed to **[02-user-input.md](./02-user-input.md)** to collect user preferences and selections.
