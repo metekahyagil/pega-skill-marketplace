@@ -50,7 +50,16 @@ Restart Claude Code after adding the configuration.
 
 ### Step 2: Install Skills from Marketplace
 
-**Option A: Install as User Skills** (Available in all projects)
+**Option A: Install via Marketplace Command** (Recommended)
+
+In Claude Code, run:
+```
+/plugin marketplace add https://github.com/metekahyagil/pega-skill-marketplace
+```
+
+Then restart Claude Code to load the skills.
+
+**Option B: Install as User Skills** (Available in all projects)
 
 ```bash
 # Clone the marketplace
@@ -60,7 +69,7 @@ git clone https://github.com/metekahyagil/pega-skill-marketplace.git
 cp -r pega-skill-marketplace/skills/* ~/.claude/skills/
 ```
 
-**Option B: Install as Project Skills** (Available only in specific project)
+**Option C: Install as Project Skills** (Available only in specific project)
 
 ```bash
 # Navigate to your project directory
