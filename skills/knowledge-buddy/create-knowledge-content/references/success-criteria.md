@@ -2,6 +2,25 @@
 
 This document provides a comprehensive checklist to verify successful knowledge base content creation.
 
+## Table of Contents
+
+- [Complete Success Checklist](#complete-success-checklist)
+- [Verification Methods](#verification-methods)
+  - [Method 1: Basic Case Verification](#method-1-basic-case-verification)
+  - [Method 2: Detailed Configuration View](#method-2-detailed-configuration-view)
+  - [Method 3: Detailed Content View](#method-3-detailed-content-view)
+  - [Method 4: Attachments View (File Mode Only)](#method-4-attachments-view-file-mode-only)
+- [Verification Tips by Content Type](#verification-tips-by-content-type)
+  - [Text Content Verification](#text-content-verification)
+  - [File Content Verification](#file-content-verification)
+  - [Access Configuration Verification](#access-configuration-verification)
+- [Common Issues and Quick Fixes](#common-issues-and-quick-fixes)
+- [Reporting Success to User](#reporting-success-to-user)
+- [Troubleshooting](#troubleshooting)
+- [Related References](#related-references)
+
+---
+
 ## Complete Success Checklist
 
 A successful content creation includes all of the following:

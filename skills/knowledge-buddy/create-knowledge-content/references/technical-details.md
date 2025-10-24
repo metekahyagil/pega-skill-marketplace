@@ -2,6 +2,21 @@
 
 This document provides technical reference information about the Pega Knowledge Buddy content creation workflow.
 
+## Table of Contents
+
+- [Case Types Used](#case-types-used)
+- [Assignment Actions](#assignment-actions)
+- [Page Instructions for Embedded Pages](#page-instructions-for-embedded-pages)
+- [Content Format Options](#content-format-options)
+- [Content Chunks Structure](#content-chunks-structure)
+- [Access Configurations Structure](#access-configurations-structure)
+- [ContentAttachment Structure (File Mode)](#contentattachment-structure-file-mode)
+- [pzInsKey Format](#pzinskey-format)
+- [Data View IDs](#data-view-ids)
+- [MCP Tools Reference](#mcp-tools-reference)
+
+---
+
 ## Case Types Used
 
 ### 1. PegaFW-KB-Work-Article
@@ -172,7 +187,7 @@ After submission:
 ```javascript
 // Each access configuration in the page list has this structure:
 {
-  AccessRoleName: "Knowledge Buddy Public"  // or other role names
+  AccessRoleName: "KnowledgeBuddy:Public"  // or other role names
 }
 ```
 
@@ -185,7 +200,7 @@ Use APPEND pageInstruction for each role:
   instruction: "APPEND",
   target: ".ContentAccessConfigurations",
   content: {
-    AccessRoleName: "Knowledge Buddy Public"
+    AccessRoleName: "KnowledgeBuddy:Public"
   }
 }
 ```
@@ -194,7 +209,7 @@ Use APPEND pageInstruction for each role:
 - **Target**: ".ContentAccessConfigurations" (with dot prefix)
 - **Content object**: Must contain "AccessRoleName" property
 - **Multiple roles**: Add separate APPEND instruction for each role
-- **Common roles**: "Knowledge Buddy Public", or other custom access roles
+- **Common roles**: "KnowledgeBuddy:Public" (Knowledge buddy public), or other custom access roles
 
 ### Storage Format
 

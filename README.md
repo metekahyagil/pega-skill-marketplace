@@ -11,6 +11,7 @@ Skills for Pega Knowledge Buddy application - content creation, ingestion, and k
 | Skill | Description |
 |-------|-------------|
 | [create-knowledge-content](./skills/knowledge-buddy/create-knowledge-content/) | Automated workflow for creating knowledge base content articles |
+| [create-knowledge-buddy](./skills/knowledge-buddy/create-knowledge-buddy/) | Create and configure Knowledge Buddies with Simple/Advanced modes, clone existing buddies, configure GenAI prompts, context data, and access control |
 
 ### Coming Soon
 

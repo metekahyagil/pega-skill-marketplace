@@ -2,6 +2,28 @@
 
 Before creating content, you need to discover what collections and data sources exist in the Pega Knowledge Buddy system.
 
+## Quick Checklist
+
+- [ ] Query collections using `get_list_data_view` with `D_IndexList`
+- [ ] Capture CollectionName, pyID, and compute pzInsKey for each collection
+- [ ] Query data sources using `get_list_data_view` with `D_DataSourceList`
+- [ ] Capture Name, pyID, and compute pzInsKey for each data source
+- [ ] Query access roles using `get_list_data_view` with `D_BuddyAccessRoleList`
+- [ ] Store all available options for user selection
+- [ ] Proceed to Step 2 (User Input)
+
+---
+
+## Table of Contents
+
+- [Step 1: Query Available Collections](#step-1-query-available-collections)
+- [Step 2: Query Available Data Sources](#step-2-query-available-data-sources)
+- [Step 3: Query Available Access Roles](#step-3-query-available-access-roles)
+- [Step 4: Present Options to User](#step-4-present-options-to-user)
+- [Next Step](#next-step)
+
+---
+
 ## Step 1: Query Available Collections
 
 Collections are the top-level organizational units in the knowledge base (vector stores).
@@ -110,3 +132,7 @@ After querying all three data sources, use the `AskUserQuestion` tool to let the
 ## Next Step
 
 After gathering available data, proceed to **[02-user-input.md](./02-user-input.md)** to collect user preferences and selections.
+
+---
+
+**Exceptions**: See **[error-handling/01-query-data-exceptions.md](error-handling/01-query-data-exceptions.md)** for data query failures and troubleshooting.

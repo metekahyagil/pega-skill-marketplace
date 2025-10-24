@@ -2,6 +2,16 @@
 
 After gathering user input, create a new Content case in the Pega Knowledge Buddy system.
 
+## Quick Checklist
+
+- [ ] Call `create_case` with case type `PegaFW-KB-Work-Article`
+- [ ] Capture `caseID` from response
+- [ ] Capture `assignmentID` from `response.assignments[0].ID`
+- [ ] Verify case created successfully
+- [ ] Proceed to Step 4 (Configure Case)
+
+---
+
 ## Case Type
 
 The Content case uses the case type:

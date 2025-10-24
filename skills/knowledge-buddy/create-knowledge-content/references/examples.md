@@ -2,6 +2,41 @@
 
 This document provides complete, working examples with actual values for creating knowledge base content.
 
+## Table of Contents
+
+- [Example 1: Text Content with Advanced Settings](#example-1-text-content-with-advanced-settings)
+  - [Scenario](#scenario)
+  - [Step 0: Authenticate](#step-0-authenticate)
+  - [Step 1: Query Collections and Data Sources](#step-1-query-collections-and-data-sources)
+  - [Step 2: User selects options](#step-2-user-selects-options)
+  - [Step 3: Create Case](#step-3-create-case)
+  - [Step 4: Configure Collection, Data Source, and Chunking](#step-4-configure-collection-data-source-and-chunking)
+  - [Step 5: Author Content](#step-5-author-content)
+  - [Step 6: Verify Success](#step-6-verify-success)
+- [Example 2: File Content with Simple Settings](#example-2-file-content-with-simple-settings)
+  - [Scenario](#scenario-1)
+  - [Step 0: Authenticate](#step-0-authenticate-1)
+  - [Steps 1-2: Query and User Selection](#steps-1-2-query-and-user-selection)
+  - [Step 3: Create Case](#step-3-create-case-1)
+  - [Step 4: Configure (Simple Settings)](#step-4-configure-simple-settings)
+  - [Step 5a: Upload File](#step-5a-upload-file)
+  - [Step 5b: Refresh Assignment](#step-5b-refresh-assignment)
+  - [Step 5c: Submit Action](#step-5c-submit-action)
+  - [Step 6: Verify Success](#step-6-verify-success-1)
+- [Example 3: Simple Settings with Single Text Chunk](#example-3-simple-settings-with-single-text-chunk)
+  - [Complete Workflow](#complete-workflow)
+- [Key Patterns from Examples](#key-patterns-from-examples)
+  - [Pattern 1: pzInsKey Format](#pattern-1-pzinskey-format)
+  - [Pattern 2: PageInstructions for Embedded Pages](#pattern-2-pageinstructions-for-embedded-pages)
+  - [Pattern 3: PageInstructions for Page Lists](#pattern-3-pageinstructions-for-page-lists)
+  - [Pattern 4: File Upload Sequence](#pattern-4-file-upload-sequence)
+  - [Pattern 5: Simple vs Advanced Settings](#pattern-5-simple-vs-advanced-settings)
+- [Testing Tips](#testing-tips)
+  - [Verify Each Step](#verify-each-step)
+  - [Use get_case_view for Debugging](#use-get_case_view-for-debugging)
+  - [Common Values for Testing](#common-values-for-testing)
+- [Related References](#related-references)
+
 ---
 
 ## Example 1: Text Content with Advanced Settings
@@ -123,7 +158,7 @@ await mcp__pega-dx-mcp__perform_assignment_action({
       instruction: "APPEND",
       target: ".ContentAccessConfigurations",
       content: {
-        AccessRoleName: "Knowledge Buddy Public"
+        AccessRoleName: "KnowledgeBuddy:Public"
       }
     }
   ]
@@ -268,7 +303,7 @@ await mcp__pega-dx-mcp__perform_assignment_action({
       instruction: "APPEND",
       target: ".ContentAccessConfigurations",
       content: {
-        AccessRoleName: "Knowledge Buddy Public"
+        AccessRoleName: "KnowledgeBuddy:Public"
       }
     }
     // No IndexParams - uses defaults (SIZE, 1000, 200)
@@ -418,7 +453,7 @@ await mcp__pega-dx-mcp__perform_assignment_action({
     {
       instruction: "APPEND",
       target: ".ContentAccessConfigurations",
-      content: { AccessRoleName: "Knowledge Buddy Public" }
+      content: { AccessRoleName: "KnowledgeBuddy:Public" }
     }
   ]
 });
@@ -581,7 +616,7 @@ ChunkSize: 1000
 ChunkOverlap: 200
 
 // Access Role
-AccessRoleName: "Knowledge Buddy Public"
+AccessRoleName: "KnowledgeBuddy:Public"
 ```
 
 ---

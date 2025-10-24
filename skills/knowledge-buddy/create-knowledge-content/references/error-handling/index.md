@@ -1,6 +1,22 @@
 # Error Handling and Troubleshooting
 
-This document covers common issues and their solutions when creating knowledge base content.
+This directory contains error handling documentation for each step of the knowledge base content creation workflow.
+
+## Step-by-Step Error Handling
+
+Each workflow step has a dedicated error handling document:
+
+- **[00-connection-exceptions.md](./00-connection-exceptions.md)** - Authentication and connection failures
+- **[01-query-data-exceptions.md](./01-query-data-exceptions.md)** - Data view query failures, empty results, permission errors
+- **[02-user-input-exceptions.md](./02-user-input-exceptions.md)** - Input validation failures, file path issues, chunking parameter errors
+- **[03-create-case-exceptions.md](./03-create-case-exceptions.md)** - Case creation failures
+- **[04-configure-case-exceptions.md](./04-configure-case-exceptions.md)** - Configuration failures, pageInstructions errors
+- **[05-author-content-exceptions.md](./05-author-content-exceptions.md)** - Content authoring failures, file upload issues
+- **[06-verify-success-exceptions.md](./06-verify-success-exceptions.md)** - Verification failures, ingestion issues
+
+---
+
+## Common Issues Overview
 
 ## 1. Empty Collection/Datasource
 
@@ -236,7 +252,7 @@ pageInstructions: [{
   instruction: "APPEND",
   target: ".ContentAccessConfigurations",
   content: {
-    AccessRoleName: "Knowledge Buddy Public"
+    AccessRoleName: "KnowledgeBuddy:Public"
   }
 }
 ```

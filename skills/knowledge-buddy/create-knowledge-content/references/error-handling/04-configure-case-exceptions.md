@@ -254,7 +254,7 @@ ContentAccessConfigurations is a **page list** (array), not a single embedded pa
 {
   instruction: "UPDATE",  // ❌ UPDATE doesn't add to list
   target: ".ContentAccessConfigurations",
-  content: { AccessRoleName: "Knowledge Buddy Public" }
+  content: { AccessRoleName: "KnowledgeBuddy:Public" }
 }
 ```
 
@@ -263,7 +263,7 @@ ContentAccessConfigurations is a **page list** (array), not a single embedded pa
 {
   instruction: "APPEND",  // ✅ APPEND adds to list
   target: ".ContentAccessConfigurations",
-  content: { AccessRoleName: "Knowledge Buddy Public" }
+  content: { AccessRoleName: "KnowledgeBuddy:Public" }
 }
 ```
 
@@ -278,10 +278,10 @@ ContentAccessConfigurations is a **page list** (array), not a single embedded pa
 
 ```javascript
 // Wrong
-{ content: { Role: "Knowledge Buddy Public" } }
+{ content: { Role: "KnowledgeBuddy:Public" } }
 
 // Correct
-{ content: { AccessRoleName: "Knowledge Buddy Public" } }
+{ content: { AccessRoleName: "KnowledgeBuddy:Public" } }
 ```
 
 #### ✅ Multiple roles need multiple APPEND instructions
@@ -291,12 +291,12 @@ pageInstructions: [
   {
     instruction: "APPEND",
     target: ".ContentAccessConfigurations",
-    content: { AccessRoleName: "Knowledge Buddy Public" }
+    content: { AccessRoleName: "KnowledgeBuddy:Public" }
   },
   {
     instruction: "APPEND",  // Second APPEND for second role
     target: ".ContentAccessConfigurations",
-    content: { AccessRoleName: "Internal Users" }
+    content: { AccessRoleName: "KnowledgeBuddy:Internal" }
   }
 ]
 ```

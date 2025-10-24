@@ -26,7 +26,8 @@
       "source": "./skills/knowledge-buddy",
       "strict": false,
       "skills": [
-        "./create-knowledge-content"
+        "./create-knowledge-content",
+        "./create-knowledge-buddy"
       ]
     }
   ]

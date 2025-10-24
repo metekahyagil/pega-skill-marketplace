@@ -2,6 +2,48 @@
 
 After configuring the case, author the article content. The workflow differs based on the **Content Format** selected by the user in Step 2.
 
+## Quick Checklist
+
+### For Text Content:
+- [ ] Set Title and Abstract in content parameter
+- [ ] Set ArticleType to "text"
+- [ ] Add pageInstructions with APPEND for each chunk to .Chunks
+- [ ] Each chunk must have "Content" property
+- [ ] Call `perform_assignment_action` with Draft assignmentID
+- [ ] Proceed to Step 6 (Verify Success)
+
+### For File Content:
+- [ ] Upload file using `upload_attachment` and capture temporary ID
+- [ ] Call `refresh_assignment_action` with pageInstructions for .ContentAttachment
+- [ ] Set Title, Abstract, and ArticleType to "file" in content
+- [ ] Call `perform_assignment_action` with same pageInstructions
+- [ ] Use REPLACE instruction for .ContentAttachment
+- [ ] Proceed to Step 6 (Verify Success)
+
+---
+
+## Table of Contents
+
+- [Content Format Options](#content-format-options)
+- [Option A: Text Content (Manual Entry)](#option-a-text-content-manual-entry)
+  - [Structure](#structure)
+  - [Implementation](#implementation)
+  - [Key Points](#key-points)
+  - [Example with 3 Chunks](#example-with-3-chunks)
+- [Option B: File Content (Upload Document)](#option-b-file-content-upload-document)
+  - [Overview](#overview)
+  - [Step 5a: Upload File](#step-5a-upload-file)
+  - [Step 5b: Refresh Assignment](#step-5b-refresh-assignment)
+  - [Step 5c: Submit Action](#step-5c-submit-action)
+  - [Key Points for File Upload](#key-points-for-file-upload)
+  - [What NOT to Do](#what-not-to-do)
+  - [Complete File Upload Example](#complete-file-upload-example)
+  - [Supported File Formats](#supported-file-formats)
+- [What Happens After Submission](#what-happens-after-submission)
+- [Next Step](#next-step)
+
+---
+
 ## Content Format Options
 
 The AuthorContent form supports two modes:

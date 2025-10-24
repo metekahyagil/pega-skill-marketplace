@@ -137,7 +137,7 @@ Retrieve final case status to confirm successful ingestion and report results to
 - **[default-settings.md](references/default-settings.md)** - Simple vs advanced settings, chunking methods (TITLE, SIZE, NONE, ABSTRACT), chunk size and overlap parameters, and configuration examples
 
 ### Error Handling
-- **[error-handling.md](references/error-handling.md)** - Common issues and solutions including empty Collection/Datasource, BAD_REQUEST errors, empty chunks, file upload issues, and ingestion failures
+- **[error-handling/index.md](references/error-handling/index.md)** - Step-by-step error handling for each workflow stage, including connection failures, query issues, input validation, configuration errors, and ingestion problems
 
 ### Verification
 - **[success-criteria.md](references/success-criteria.md)** - Complete verification checklist for case creation, configuration, content authoring, and ingestion status
@@ -179,7 +179,7 @@ pageInstructions: [
 
 - **Case Type**: `PegaFW-KB-Work-Article`
 - **Collection Class**: `PEGAFW-QNA-WORK`
-- **Default Access Role**: `Knowledge Buddy Public`
+- **Default Access Role**: `KnowledgeBuddy:Public`
 - **Default Chunking**: SIZE method, 1000 size, 200 overlap
 
 ---

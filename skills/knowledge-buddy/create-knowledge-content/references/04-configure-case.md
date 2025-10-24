@@ -2,6 +2,42 @@
 
 After creating the Content case, perform the Create action to configure collection, data source, access roles, and optionally chunking parameters.
 
+## Quick Checklist
+
+- [ ] Use `perform_assignment_action` with assignmentID from Step 3
+- [ ] Set actionID to "Create"
+- [ ] Add pageInstructions with UPDATE for Collection (with pyID and pzInsKey)
+- [ ] Add pageInstructions with UPDATE for Datasource (with pyID and pzInsKey)
+- [ ] If Advanced settings: Add pageInstructions with UPDATE for IndexParams
+- [ ] Add pageInstructions with APPEND for each selected access role
+- [ ] Verify all target paths start with dot (.)
+- [ ] Verify pzInsKey format has single space
+- [ ] Capture new assignmentID for Draft stage
+- [ ] Proceed to Step 5 (Author Content)
+
+---
+
+## Table of Contents
+
+- [Assignment Action](#assignment-action)
+- [Configuration Modes](#configuration-modes)
+  - [Simple Settings (Default)](#simple-settings-default)
+  - [Advanced Settings](#advanced-settings)
+- [Critical Points](#critical-points)
+  - [PageInstructions for Embedded Pages](#pageinstructions-for-embedded-pages)
+  - [Target Paths](#target-paths)
+  - [Instructions](#instructions)
+  - [Complete References](#complete-references)
+  - [pzInsKey Format](#pzinskey-format)
+  - [Access Roles](#access-roles)
+- [What This Returns](#what-this-returns)
+- [Example with Actual Values](#example-with-actual-values)
+  - [Simple Settings Example](#simple-settings-example)
+  - [Advanced Settings Example](#advanced-settings-example)
+- [Next Step](#next-step)
+
+---
+
 ## Assignment Action
 
 Use the `perform_assignment_action` MCP tool with:

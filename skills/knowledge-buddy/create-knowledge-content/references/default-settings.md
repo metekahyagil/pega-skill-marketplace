@@ -2,6 +2,36 @@
 
 This document explains the configuration modes available when creating knowledge base content.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Simple Settings (Recommended)](#simple-settings-recommended)
+  - [When to Use](#when-to-use)
+  - [Default Values](#default-values)
+  - [Implementation](#implementation)
+  - [Key Points](#key-points)
+- [Advanced Settings](#advanced-settings)
+  - [When to Use](#when-to-use-1)
+  - [Configurable Parameters](#configurable-parameters)
+  - [Implementation](#implementation-1)
+  - [Key Points](#key-points-1)
+- [Content Format Independence](#content-format-independence)
+- [Example Workflow Variations](#example-workflow-variations)
+  - [1. Simple Settings + Text Content](#1-simple-settings--text-content)
+  - [2. Advanced Settings + Text Content](#2-advanced-settings--text-content)
+  - [3. Simple Settings + File Content](#3-simple-settings--file-content)
+  - [4. Advanced Settings + File Content](#4-advanced-settings--file-content)
+- [Chunking Method Guidelines](#chunking-method-guidelines)
+  - [SIZE Method (Default)](#size-method-default)
+  - [TITLE Method](#title-method)
+  - [NONE Method](#none-method)
+  - [ABSTRACT Method](#abstract-method)
+- [Access Configuration](#access-configuration)
+- [Choosing the Right Mode](#choosing-the-right-mode)
+- [Related References](#related-references)
+
+---
+
 ## Overview
 
 This skill supports two configuration modes:
@@ -55,7 +85,7 @@ mcp__pega-dx-mcp__perform_assignment_action({
     {
       instruction: "APPEND",
       target: ".ContentAccessConfigurations",
-      content: { AccessRoleName: "Knowledge Buddy Public" }
+      content: { AccessRoleName: "KnowledgeBuddy:Public" }
     }
     // No IndexParams - system uses defaults
   ]
@@ -153,7 +183,7 @@ mcp__pega-dx-mcp__perform_assignment_action({
     {
       instruction: "APPEND",
       target: ".ContentAccessConfigurations",
-      content: { AccessRoleName: "Knowledge Buddy Public" }
+      content: { AccessRoleName: "KnowledgeBuddy:Public" }
     }
   ]
 })
@@ -378,7 +408,7 @@ pageInstructions: [
 ### Default Access Role
 
 Both simple and advanced settings use the same default access role:
-- **"Knowledge Buddy Public"** - Public access to knowledge base content
+- **"KnowledgeBuddy:Public"** (Knowledge buddy public) - Public access to knowledge base content
 
 ### Multiple Access Roles
 
@@ -393,7 +423,7 @@ For both modes, multiple access roles can be added with multiple APPEND instruct
 {
   instruction: "APPEND",
   target: ".ContentAccessConfigurations",
-  content: { AccessRoleName: "Internal Users" }
+  content: { AccessRoleName: "KnowledgeBuddy:Internal" }
 }
 ```
 

@@ -2,6 +2,38 @@
 
 After discovering available collections and data sources, collect user preferences and content details using the `AskUserQuestion` tool.
 
+## Quick Checklist
+
+- [ ] Ask initial configuration questions (collection, data source, settings mode, content format)
+- [ ] If Advanced settings: Ask chunking configuration questions
+- [ ] Ask content details questions (access roles, title, abstract)
+- [ ] For text content: Collect chunk content
+- [ ] For file content: Collect and validate file path
+- [ ] Verify all required data captured
+- [ ] Proceed to Step 3 (Create Case)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Step 2a: Initial Configuration Questions](#step-2a-initial-configuration-questions)
+  - [1. Collection Selection](#1-collection-selection)
+  - [2. Data Source Selection](#2-data-source-selection)
+  - [3. Settings Mode](#3-settings-mode)
+  - [4. Content Format](#4-content-format)
+- [Step 2b: Advanced Settings Questions (Conditional)](#step-2b-advanced-settings-questions-conditional)
+- [Step 2c: Content Details Questions](#step-2c-content-details-questions)
+  - [Access Roles](#access-roles-required-for-both-formats)
+  - [For Text Content](#for-text-content)
+  - [For File Content](#for-file-content)
+- [Example: Simple Settings + Text Content](#example-simple-settings--text-content)
+- [Example: Advanced Settings + File Content](#example-advanced-settings--file-content)
+- [Data to Capture](#data-to-capture)
+- [Next Step](#next-step)
+
+---
+
 ## Overview
 
 Due to the 4-question limit per `AskUserQuestion` call, this may require 2-3 calls depending on user choices.
@@ -166,3 +198,7 @@ After gathering all user input, you should have:
 ## Next Step
 
 After gathering all user input, proceed to **[03-create-case.md](./03-create-case.md)** to create the Content case.
+
+---
+
+**Exceptions**: See **[error-handling/02-user-input-exceptions.md](error-handling/02-user-input-exceptions.md)** for input validation failures and troubleshooting.

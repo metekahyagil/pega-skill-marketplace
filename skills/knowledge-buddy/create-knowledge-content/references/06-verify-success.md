@@ -2,6 +2,40 @@
 
 After authoring content, verify that the content was successfully ingested into the knowledge base.
 
+## Quick Checklist
+
+- [ ] Call `get_case` with caseID to retrieve case status
+- [ ] Verify status is "Resolved-Published" (or "Pending-Ingestion")
+- [ ] Verify CollectionName is populated
+- [ ] Verify DataSourceName is populated
+- [ ] For text mode: Verify Chunks populated
+- [ ] For file mode: Verify ContentAttachment and file attachment present
+- [ ] Check IndexStatus.status is "Completed"
+- [ ] Report success with case ID and content URL to user
+
+---
+
+## Table of Contents
+
+- [Retrieve Case Status](#retrieve-case-status)
+- [What to Verify](#what-to-verify)
+  - [Case Status](#case-status)
+  - [Collection and Data Source](#collection-and-data-source)
+  - [Content Data](#content-data)
+  - [Access Configuration](#access-configuration)
+- [Detailed Content Verification](#detailed-content-verification)
+  - [View Configuration (Create Action)](#view-configuration-create-action)
+  - [View Content (AuthorContent Action)](#view-content-authorcontent-action)
+  - [View Attachments (File Mode Only)](#view-attachments-file-mode-only)
+- [Success Criteria](#success-criteria)
+- [Example Verification](#example-verification)
+- [Ingestion Status](#ingestion-status)
+- [Content URL](#content-url)
+- [Report to User](#report-to-user)
+- [Complete Workflow](#complete-workflow)
+
+---
+
 ## Retrieve Case Status
 
 Use `get_case` to retrieve the final case status:

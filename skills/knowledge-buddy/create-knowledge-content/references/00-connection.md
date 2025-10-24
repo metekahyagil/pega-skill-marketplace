@@ -2,6 +2,14 @@
 
 Before starting the content creation workflow, you must authenticate and verify connection to your Pega instance.
 
+## Quick Checklist
+
+- [ ] Call `authenticate_pega` MCP tool
+- [ ] Verify authentication succeeds (no errors)
+- [ ] Proceed to Step 1 (Query Data)
+
+---
+
 ## Authentication
 
 Use the `authenticate_pega` MCP tool to validate connectivity:
