@@ -1,6 +1,6 @@
 ---
 name: create-knowledge-content
-description: Simplified workflow for creating knowledge base content articles in Pega Knowledge Buddy applications. Use this skill when the user wants to create, author, and ingest content into a knowledge base with collection, data source, access configuration, and chunking settings. Handles the complete end-to-end workflow from case creation through content ingestion with support for multiple content chunks and access roles.
+description: Simplified workflow for creating knowledge base content articles in Pega Knowledge Buddy applications. This skill should be used when the user wants to create, author, and ingest content into a knowledge base with collection, data source, access configuration, and chunking settings. Handles the complete end-to-end workflow from case creation through content ingestion with support for multiple content chunks and access roles.
 ---
 
 # Create Knowledge Content

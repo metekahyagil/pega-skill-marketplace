@@ -1,27 +1,16 @@
 # Step 3: Create Content Case
 
-After gathering user input, create a new Content case in the Pega Knowledge Buddy system.
+## Purpose
 
-## Quick Checklist
-
-- [ ] Call `create_case` with case type `PegaFW-KB-Work-Article`
-- [ ] Capture `caseID` from response
-- [ ] Capture `assignmentID` from `response.assignments[0].ID`
-- [ ] Verify case created successfully
-- [ ] Proceed to Step 4 (Configure Case)
-
----
+Create a new Content case for knowledge base article.
 
 ## Case Type
 
-The Content case uses the case type:
 ```
 PegaFW-KB-Work-Article
 ```
 
-## Creating the Case
-
-Use the `create_case` MCP tool with empty content:
+## MCP Tool
 
 ```javascript
 mcp__pega-dx-mcp__create_case({
@@ -30,51 +19,30 @@ mcp__pega-dx-mcp__create_case({
 })
 ```
 
-## What This Returns
+## Extract from Response
 
-The response includes:
-- **caseID**: The unique case identifier (e.g., `KB-1023`)
-- **assignmentID**: The first assignment for the Create action
-  - Format: `ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE <caseID>!CREATEFORM_DEFAULT`
-  - Example: `ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!CREATEFORM_DEFAULT`
+- **Case ID**: `caseID` (e.g., "KB-1023")
+- **Assignment ID**: `assignments[0].ID`
+- **Assignment Action**: "Create" (CREATEFORM_DEFAULT)
 
-## Case Stage
+Case stage after creation: **Create** (PRIM0)
 
-After creation, the case is in the **Create** stage (PRIM0).
-
-## What to Capture
-
-Store both values for the next step:
-1. `caseID` - For final verification
-2. `assignmentID` - For performing the Create action
-
-## Example
+## Example Response
 
 ```javascript
-const response = await mcp__pega-dx-mcp__create_case({
-  caseTypeID: "PegaFW-KB-Work-Article",
-  content: {}
-});
-
-// Response:
-// {
-//   caseID: "KB-1023",
-//   assignments: [{
-//     ID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!CREATEFORM_DEFAULT",
-//     name: "Create",
-//     type: "Create",
-//     ...
-//   }]
-// }
-
-const caseID = response.caseID;
-const assignmentID = response.assignments[0].ID;
+{
+  caseID: "KB-1023",
+  assignments: [{
+    ID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!CREATEFORM_DEFAULT",
+    name: "Create"
+  }]
+}
 ```
+
+Store `caseID` and `assignmentID` for next steps.
 
 ## Next Step
 
-After creating the case, proceed to **[04-configure-case.md](./04-configure-case.md)** to configure collection, data source, and access settings.
+[04-configure-case.md](04-configure-case.md)
 
----
-
-**Exceptions**: See **[error-handling/03-create-case-exceptions.md](error-handling/03-create-case-exceptions.md)** for case creation failures and troubleshooting.
+**Exceptions**: See [error-handling/03-create-case-exceptions.md](error-handling/03-create-case-exceptions.md) for troubleshooting.

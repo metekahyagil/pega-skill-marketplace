@@ -1,6 +1,6 @@
 ---
 name: create-knowledge-buddy
-description: Create and configure Knowledge Buddy cases in Pega Knowledge Buddy applications. Use this skill when the user wants to create a new knowledge buddy with configurable access control, GenAI prompts, context data definitions, and model settings. Supports both simple (default settings) and advanced (full customization) configuration modes.
+description: Create and configure Knowledge Buddy cases in Pega Knowledge Buddy applications. This skill should be used when the user wants to create a new knowledge buddy with configurable access control, GenAI prompts, context data definitions, and model settings. Supports both simple (default settings) and advanced (full customization) configuration modes.
 ---
 
 # Create Knowledge Buddy

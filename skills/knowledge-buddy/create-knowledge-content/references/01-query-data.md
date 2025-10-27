@@ -1,111 +1,62 @@
-# Query Collections and Data Sources
+# Step 1: Query Available Data
 
-Before creating content, you need to discover what collections and data sources exist in the Pega Knowledge Buddy system.
+## Purpose
 
-## Quick Checklist
-
-- [ ] Query collections using `get_list_data_view` with `D_IndexList`
-- [ ] Capture CollectionName, pyID, and compute pzInsKey for each collection
-- [ ] Query data sources using `get_list_data_view` with `D_DataSourceList`
-- [ ] Capture Name, pyID, and compute pzInsKey for each data source
-- [ ] Query access roles using `get_list_data_view` with `D_BuddyAccessRoleList`
-- [ ] Store all available options for user selection
-- [ ] Proceed to Step 2 (User Input)
-
----
+Query Pega data pages to retrieve collections, data sources, access roles, and optionally existing content for user selection.
 
 ## Table of Contents
 
-- [Step 1: Query Available Collections](#step-1-query-available-collections)
-- [Step 2: Query Available Data Sources](#step-2-query-available-data-sources)
-- [Step 3: Query Available Access Roles](#step-3-query-available-access-roles)
-- [Step 4: Present Options to User](#step-4-present-options-to-user)
-- [Next Step](#next-step)
+- [Query 1: Collections](#query-1-collections)
+- [Query 2: Data Sources](#query-2-data-sources)
+- [Query 3: Access Roles](#query-3-access-roles)
+- [Query 4: Existing Content (Optional)](#query-4-existing-content-optional)
 
----
+## MCP Tool
 
-## Step 1: Query Available Collections
+Use `mcp__pega-dx-mcp__get_list_data_view` for all queries. Query in parallel for better performance.
 
-Collections are the top-level organizational units in the knowledge base (vector stores).
+## Query 1: Collections
 
 ```javascript
 mcp__pega-dx-mcp__get_list_data_view({
   dataViewID: "D_IndexList",
   query: {
     select: [
-      { field: "CollectionName" },
       { field: "pyID" },
-      { field: "pyLabel" },
-      { field: "pyStatusWork" }
+      { field: "CollectionName" }
     ]
   },
-  paging: { pageSize: 100 }
+  paging: { pageSize: 50 }
 })
 ```
 
-**Returns:** List of available collections with:
-- `CollectionName` - The collection identifier (e.g., "knowledge")
-- `pyID` - The collection ID (e.g., "DC-1")
-- `pyLabel` - Display name
-- `pyStatusWork` - Status (e.g., "Open")
+**Extract**: CollectionName, pyID, compute pzInsKey as `"PEGAFW-QNA-WORK <pyID>"`
 
-**What to capture:**
-- Store `CollectionName`, `pyID`, and compute `pzInsKey` for the selected collection
-- `pzInsKey` format: `"PEGAFW-QNA-WORK <pyID>"` (e.g., "PEGAFW-QNA-WORK DC-1")
-
-## Step 2: Query Available Data Sources
-
-Data sources (content types) define how content is organized within collections.
+## Query 2: Data Sources
 
 ```javascript
 mcp__pega-dx-mcp__get_list_data_view({
-  dataViewID: "D_DataSourceList",
-  query: {
-    select: [
-      { field: "Name" },
-      { field: "pyID" },
-      { field: "pyLabel" },
-      { field: "CollectionName" },
-      { field: "pyStatusWork" }
-    ]
-  },
-  paging: { pageSize: 100 }
+  dataViewID: "D_ContentAccessDataSourcesByCollection",
+  dataViewParameters: {
+    Available: "Yes",
+    CollectionID: ""  // Leave empty for all, or filter by collection pyID
+  }
 })
 ```
 
-**Returns:** List of available data sources with:
-- `Name` - The data source identifier (e.g., "Knowledge_ingestion_test")
-- `pyID` - The data source ID (e.g., "SRC-1001")
-- `pyLabel` - Display name
-- `CollectionName` - Parent collection
-- `pyStatusWork` - Status
+**Extract**: Data source information, compute pzInsKey as `"PEGAFW-QNA-WORK <pyID>"`
 
-**What to capture:**
-- Store `Name`, `pyID`, and compute `pzInsKey` for the selected data source
-- `pzInsKey` format: `"PEGAFW-QNA-WORK <pyID>"` (e.g., "PEGAFW-QNA-WORK SRC-1001")
-
-## Step 3: Query Available Access Roles
-
-Access roles control who can view and access the content in the knowledge base.
+## Query 3: Access Roles
 
 ```javascript
 mcp__pega-dx-mcp__get_list_data_view({
   dataViewID: "D_BuddyAccessRoleList",
-  query: {
-    select: [
-      { field: "AccessRoleName" },
-      { field: "pyLabel" }
-    ]
-  },
-  paging: { pageSize: 100 }
+  dataViewParameters: {}
 })
 ```
 
-**Returns:** List of available access roles with:
-- `AccessRoleName` - The role identifier (e.g., "KnowledgeBuddy:Public")
-- `pyLabel` - Display name (e.g., "Knowledge buddy public")
+**Common Access Roles**:
 
-**Common Roles:**
 | Access Role                      | Label                   | Purpose                    |
 |----------------------------------|-------------------------|----------------------------|
 | KnowledgeBuddy:Public            | Knowledge buddy public  | Public access              |
@@ -115,24 +66,35 @@ mcp__pega-dx-mcp__get_list_data_view({
 | KnowledgeBuddy:DataSourceManager | Data source manager     | Data source administrators |
 | KnowledgeBuddy:Admin             | Buddy administrator     | Full administrative access |
 
-**What to capture:**
-- Store all available `AccessRoleName` values for user selection
-- User can select **one or more** access roles
-- If no selection made, default to "KnowledgeBuddy:Public"
+**Default**: If no selection, use `"KnowledgeBuddy:Public"`. User can select multiple roles.
 
-## Step 4: Present Options to User
+## Query 4: Existing Content (Optional)
 
-After querying all three data sources, use the `AskUserQuestion` tool to let the user select:
-1. Which collection to use (from Step 1 results)
-2. Which data source to use (from Step 2 results, optionally filtered by selected collection)
-3. Which access role(s) to assign (from Step 3 results, multi-select enabled)
+Query to understand content structure or check for similar content:
 
-**Note:** Access role selection will be part of the user input flow in Step 2 (02-user-input.md).
+```javascript
+mcp__pega-dx-mcp__get_list_data_view({
+  dataViewID: "D_ContentList",
+  query: {
+    select: [
+      { field: "pyID" },
+      { field: "Title" },
+      { field: "pyStatusWork" },
+      { field: "ArticleType" },
+      { field: "CollectionName" },
+      { field: "DataSourceName" }
+    ]
+  },
+  paging: { pageSize: 10 }
+})
+```
+
+## Usage
+
+Store queried data for use in Step 2 (user input) and Steps 4-5 (configuration/authoring).
 
 ## Next Step
 
-After gathering available data, proceed to **[02-user-input.md](./02-user-input.md)** to collect user preferences and selections.
+[02-user-input.md](02-user-input.md)
 
----
-
-**Exceptions**: See **[error-handling/01-query-data-exceptions.md](error-handling/01-query-data-exceptions.md)** for data query failures and troubleshooting.
+**Exceptions**: See [error-handling/01-query-data-exceptions.md](error-handling/01-query-data-exceptions.md) for troubleshooting.
