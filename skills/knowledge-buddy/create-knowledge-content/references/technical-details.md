@@ -313,13 +313,14 @@ Always provide pzInsKey when referencing objects:
 | Tool | Purpose | Step |
 |------|---------|------|
 | `authenticate_pega` | Verify Pega connection | Step 0 |
-| `get_list_data_view` | Query collections and data sources | Step 1 |
-| `create_case` | Create Content case | Step 3 |
-| `perform_assignment_action` | Execute assignment actions | Steps 4, 5 |
-| `refresh_assignment_action` | Refresh assignment (file mode only) | Step 5b |
-| `upload_attachment` | Upload file (file mode only) | Step 5a |
-| `get_case` | Retrieve case status | Step 6 |
-| `get_case_view` | Retrieve detailed view | Step 6 |
-| `get_case_attachments` | List attachments (file mode) | Step 6 |
+| `create_case` | Create Content case | Step 1 |
+| `get_list_data_view` | Query collections, data sources, and access roles | Steps 2, 4, 5 |
+| `refresh_assignment_action` | Refresh assignment after configuration | Steps 3, 8 |
+| `perform_assignment_action` | Execute assignment actions | Steps 7, 9 |
+| `refresh_case_view` | Refresh case view | Step 8 |
+| `upload_attachment` | Upload file (file mode only) | Step 9a |
+| `get_case` | Retrieve case status | Step 10 |
+| `get_case_view` | Retrieve detailed case view | Step 10 |
+| `get_case_attachments` | List attachments (file mode) | Step 10 |
 
 See individual step references for detailed usage of each tool.

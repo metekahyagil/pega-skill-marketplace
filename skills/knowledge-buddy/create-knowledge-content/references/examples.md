@@ -1,148 +1,248 @@
 # Complete Working Examples
 
-This document provides complete, working examples with actual values for creating knowledge base content.
+This document provides complete end-to-end examples matching the new workflow.
 
-## Table of Contents
+## Example 1: Text Content with Simple Settings
 
-- [Example 1: Text Content with Advanced Settings](#example-1-text-content-with-advanced-settings)
-  - [Scenario](#scenario)
-  - [Step 0: Authenticate](#step-0-authenticate)
-  - [Step 1: Query Collections and Data Sources](#step-1-query-collections-and-data-sources)
-  - [Step 2: User selects options](#step-2-user-selects-options)
-  - [Step 3: Create Case](#step-3-create-case)
-  - [Step 4: Configure Collection, Data Source, and Chunking](#step-4-configure-collection-data-source-and-chunking)
-  - [Step 5: Author Content](#step-5-author-content)
-  - [Step 6: Verify Success](#step-6-verify-success)
-- [Example 2: File Content with Simple Settings](#example-2-file-content-with-simple-settings)
-  - [Scenario](#scenario-1)
-  - [Step 0: Authenticate](#step-0-authenticate-1)
-  - [Steps 1-2: Query and User Selection](#steps-1-2-query-and-user-selection)
-  - [Step 3: Create Case](#step-3-create-case-1)
-  - [Step 4: Configure (Simple Settings)](#step-4-configure-simple-settings)
-  - [Step 5a: Upload File](#step-5a-upload-file)
-  - [Step 5b: Refresh Assignment](#step-5b-refresh-assignment)
-  - [Step 5c: Submit Action](#step-5c-submit-action)
-  - [Step 6: Verify Success](#step-6-verify-success-1)
-- [Example 3: Simple Settings with Single Text Chunk](#example-3-simple-settings-with-single-text-chunk)
-  - [Complete Workflow](#complete-workflow)
-- [Key Patterns from Examples](#key-patterns-from-examples)
-  - [Pattern 1: pzInsKey Format](#pattern-1-pzinskey-format)
-  - [Pattern 2: PageInstructions for Embedded Pages](#pattern-2-pageinstructions-for-embedded-pages)
-  - [Pattern 3: PageInstructions for Page Lists](#pattern-3-pageinstructions-for-page-lists)
-  - [Pattern 4: File Upload Sequence](#pattern-4-file-upload-sequence)
-  - [Pattern 5: Simple vs Advanced Settings](#pattern-5-simple-vs-advanced-settings)
-- [Testing Tips](#testing-tips)
-  - [Verify Each Step](#verify-each-step)
-  - [Use get_case_view for Debugging](#use-get_case_view-for-debugging)
-  - [Common Values for Testing](#common-values-for-testing)
-- [Related References](#related-references)
+Complete flow for creating text-based content with default chunking settings.
 
----
-
-## Example 1: Text Content with Advanced Settings
-
-This example demonstrates the complete workflow for creating text-based content with custom chunking parameters.
-
-### Scenario
-
-- **Collection**: "knowledge" (DC-1)
-- **Data Source**: "Knowledge_ingestion_test" (SRC-1001)
-- **Settings**: Advanced (custom chunking)
-- **Content Format**: Text with 3 chunks
-- **Title**: "Understanding Pega DX API"
-- **Abstract**: "A comprehensive guide to using the Pega DX API"
-
-### Step 0: Authenticate
+### Step 1: Create Case
 
 ```javascript
-await mcp__pega-dx-mcp__authenticate_pega({});
-// Verify connection succeeds before proceeding
-```
-
-### Step 1: Query Collections and Data Sources
-
-```javascript
-// Query collections
-const collections = await mcp__pega-dx-mcp__get_list_data_view({
-  dataViewID: "D_IndexList",
-  query: {
-    select: [
-      { field: "CollectionName" },
-      { field: "pyID" },
-      { field: "pyLabel" },
-      { field: "pyStatusWork" }
-    ]
-  },
-  paging: { pageSize: 100 }
-});
-
-// Query data sources
-const dataSources = await mcp__pega-dx-mcp__get_list_data_view({
-  dataViewID: "D_DataSourceList",
-  query: {
-    select: [
-      { field: "Name" },
-      { field: "pyID" },
-      { field: "pyLabel" },
-      { field: "CollectionName" },
-      { field: "pyStatusWork" }
-    ]
-  },
-  paging: { pageSize: 100 }
-});
-```
-
-### Step 2: User selects options
-
-(User selects collection "knowledge", data source "Knowledge_ingestion_test", advanced settings with SIZE method, 1000 chunk size, 200 overlap, text format)
-
-### Step 3: Create Case
-
-```javascript
-const createResponse = await mcp__pega-dx-mcp__create_case({
+mcp__pega-dx-mcp__create_case({
   caseTypeID: "PegaFW-KB-Work-Article",
-  content: {}
-});
-
-// Returns:
-// {
-//   caseID: "KB-1023",
-//   assignments: [{
-//     ID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!CREATEFORM_DEFAULT",
-//     ...
-//   }]
-// }
-
-const caseID = createResponse.caseID;
-const createAssignmentID = createResponse.assignments[0].ID;
+  content: { pyAddCaseContextPage: {} },
+  processID: "pyStartCase"
+})
+// Response: caseID="KB-2020", assignmentID="ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2020!CREATEFORM_DEFAULT"
 ```
 
-### Step 4: Configure Collection, Data Source, and Chunking
+### Step 2: Query and Select Collection
 
 ```javascript
-await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!CREATEFORM_DEFAULT",
+mcp__pega-dx-mcp__get_list_data_view({
+  dataViewID: "D_IndexList",
+  dataViewParameters: {},
+  paging: { pageNumber: 1, pageSize: 50 },
+  query: {
+    select: [{ field: "pyID" }, { field: "CollectionName" }],
+    distinctResultsOnly: "true"
+  }
+})
+// User selects: CollectionName="knowledge", pyID="DC-1"
+```
+
+### Step 3: Refresh Assignment
+
+```javascript
+mcp__pega-dx-mcp__refresh_assignment_action({
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2020!CREATEFORM_DEFAULT",
+  actionID: "Create"
+})
+```
+
+### Step 4: Query and Select Data Source
+
+```javascript
+mcp__pega-dx-mcp__get_list_data_view({
+  dataViewID: "D_ContentAccessDataSourcesByCollection",
+  dataViewParameters: { Available: "Yes", CollectionID: "DC-1" }
+})
+// User selects: Name="Knowledge_source", pyID="SRC-1"
+```
+
+### Step 5: Query and Select Access Roles
+
+```javascript
+mcp__pega-dx-mcp__get_list_data_view({
+  dataViewID: "D_BuddyAccessRoleList",
+  dataViewParameters: {}
+})
+// User selects (multi-select): ["KnowledgeBuddy:Admin", "KnowledgeBuddy:Author"]
+```
+
+### Step 6: Configure Chunking (Simple Mode)
+
+User selects: "No" (use default settings)
+
+### Step 7: Submit Configuration
+
+```javascript
+mcp__pega-dx-mcp__perform_assignment_action({
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2020!CREATEFORM_DEFAULT",
   actionID: "Create",
+  viewType: "page",
   content: {
-    AdvancedSettings: true  // Enable advanced settings
+    Collection: { pyID: "DC-1" },
+    Datasource: { pyID: "SRC-1" },
+    AdvancedSettings: false
   },
   pageInstructions: [
     {
       instruction: "UPDATE",
       target: ".Collection",
       content: {
-        CollectionName: "knowledge",
         pyID: "DC-1",
-        pzInsKey: "PEGAFW-QNA-WORK DC-1"  // Note the space!
+        pzInsKey: "PEGAFW-QNA-WORK DC-1"
       }
     },
     {
       instruction: "UPDATE",
       target: ".Datasource",
       content: {
-        Name: "Knowledge_ingestion_test",
-        pyID: "SRC-1001",
-        pzInsKey: "PEGAFW-QNA-WORK SRC-1001"  // Note the space!
+        pyID: "SRC-1",
+        pzInsKey: "PEGAFW-QNA-WORK SRC-1"
+      }
+    },
+    {
+      target: ".ContentAccessConfigurations",
+      content: {},
+      listIndex: 1,
+      instruction: "INSERT"
+    },
+    {
+      content: { AccessRoleName: "KnowledgeBuddy:Admin" },
+      target: ".ContentAccessConfigurations",
+      listIndex: 1,
+      instruction: "UPDATE"
+    },
+    {
+      target: ".ContentAccessConfigurations",
+      content: {},
+      listIndex: 2,
+      instruction: "INSERT"
+    },
+    {
+      content: { AccessRoleName: "KnowledgeBuddy:Author" },
+      target: ".ContentAccessConfigurations",
+      listIndex: 2,
+      instruction: "UPDATE"
+    },
+    {
+      target: ".ContentAccessConfigurations",
+      content: {},
+      listIndex: 3,
+      instruction: "INSERT"
+    },
+    {
+      target: ".ContentAccessConfigurations",
+      listIndex: 3,
+      instruction: "DELETE"
+    }
+  ]
+})
+// Response: New assignmentID="ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2020!DRAFT_FLOW"
+```
+
+### Step 8: Refresh After Configuration
+
+```javascript
+mcp__pega-dx-mcp__refresh_case_view({
+  caseID: "PEGAFW-KB-WORK-ARTICLE KB-2020",
+  viewID: "pyDetailsTabContent"
+})
+```
+
+### Step 9: Author Text Content
+
+User selects: Format="Text", Title="API Guide", Abstract="Guide to Pega DX API", Chunks=2
+
+```javascript
+mcp__pega-dx-mcp__perform_assignment_action({
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2020!DRAFT_FLOW",
+  actionID: "AuthorContent",
+  viewType: "form",
+  content: {
+    ArticleType: "text",
+    Title: "API Guide",
+    Abstract: "Guide to Pega DX API"
+  },
+  pageInstructions: [
+    {
+      target: ".Chunks",
+      content: {},
+      listIndex: 1,
+      instruction: "INSERT"
+    },
+    {
+      content: { Content: "<p>This is first content</p>" },
+      target: ".Chunks",
+      listIndex: 1,
+      instruction: "UPDATE"
+    },
+    {
+      target: ".Chunks",
+      content: {},
+      listIndex: 2,
+      instruction: "INSERT"
+    },
+    {
+      content: { Content: "<p>This is second <strong>content</strong>.</p>" },
+      target: ".Chunks",
+      listIndex: 2,
+      instruction: "UPDATE"
+    }
+  ]
+})
+```
+
+### Step 10: Verify and Display
+
+```javascript
+mcp__pega-dx-mcp__get_case_view({
+  caseID: "PEGAFW-KB-WORK-ARTICLE KB-2020",
+  viewID: "pyCaseSummary"
+})
+
+mcp__pega-dx-mcp__get_case_view({
+  caseID: "PEGAFW-KB-WORK-ARTICLE KB-2020",
+  viewID: "pyDetailsTabContent"
+})
+```
+
+Display summary to user with case ID, status, and configuration details.
+
+---
+
+## Example 2: File Content with Advanced Settings
+
+Complete flow for uploading a file with custom chunking settings.
+
+### Steps 1-5: Same as Example 1
+
+(Create case, query collections, refresh, query data sources, query access roles)
+
+### Step 6: Configure Chunking (Advanced Mode)
+
+User selects: "Yes" → Method="SIZE", Size=1000, Overlap=200
+
+### Step 7: Submit Configuration with Advanced Settings
+
+```javascript
+mcp__pega-dx-mcp__perform_assignment_action({
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2021!CREATEFORM_DEFAULT",
+  actionID: "Create",
+  viewType: "page",
+  content: {
+    Collection: { pyID: "DC-1" },
+    Datasource: { pyID: "SRC-2" },
+    AdvancedSettings: true
+  },
+  pageInstructions: [
+    {
+      instruction: "UPDATE",
+      target: ".Collection",
+      content: {
+        pyID: "DC-1",
+        pzInsKey: "PEGAFW-QNA-WORK DC-1"
+      }
+    },
+    {
+      instruction: "UPDATE",
+      target: ".Datasource",
+      content: {
+        pyID: "SRC-2",
+        pzInsKey: "PEGAFW-QNA-WORK SRC-2"
       }
     },
     {
@@ -155,475 +255,152 @@ await mcp__pega-dx-mcp__perform_assignment_action({
       }
     },
     {
-      instruction: "APPEND",
       target: ".ContentAccessConfigurations",
-      content: {
-        AccessRoleName: "KnowledgeBuddy:Public"
-      }
-    }
-  ]
-});
-
-// Returns: Progresses to Draft stage
-// New assignment: ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!DRAFT_FLOW
-```
-
-### Step 5: Author Content
-
-```javascript
-await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1023!DRAFT_FLOW",
-  actionID: "AuthorContent",
-  content: {
-    Title: "Understanding Pega DX API",
-    Abstract: "A comprehensive guide to using the Pega DX API"
-    // ArticleType defaults to "text"
-  },
-  pageInstructions: [
-    {
-      instruction: "APPEND",
-      target: ".Chunks",
-      content: {
-        Content: "Introduction: This article covers the fundamentals of the Pega DX API. The DX API provides a modern, RESTful interface for interacting with Pega applications. It supports OAuth 2.1 authentication with PKCE for secure access and offers comprehensive endpoints for case management, data operations, and system configuration."
-      }
+      content: {},
+      listIndex: 1,
+      instruction: "INSERT"
     },
     {
-      instruction: "APPEND",
-      target: ".Chunks",
-      content: {
-        Content: "Authentication: The DX API uses OAuth 2.1 with PKCE for secure access. To authenticate, first register your application with Pega to obtain client credentials. Then use the authorization code flow with PKCE to obtain access tokens. Tokens should be refreshed before expiration to maintain continuous access."
-      }
-    },
-    {
-      instruction: "APPEND",
-      target: ".Chunks",
-      content: {
-        Content: "Best Practices: Follow these guidelines for optimal API integration. Always use HTTPS for API calls. Implement proper error handling and retry logic. Cache access tokens and refresh before expiration. Use appropriate page sizes for list operations. Follow rate limiting guidelines to avoid throttling."
-      }
-    }
-  ]
-});
-
-// Case progresses to Ingestion stage, then Resolve stage
-```
-
-### Step 6: Verify Success
-
-```javascript
-const finalCase = await mcp__pega-dx-mcp__get_case({
-  caseID: "KB-1023"
-});
-
-// Verify final case state shows:
-console.log("Case ID:", finalCase.pyID);                    // "KB-1023"
-console.log("Status:", finalCase.pyStatusWork);             // "Resolved-Published"
-console.log("Collection:", finalCase.CollectionName);       // "knowledge"
-console.log("Data Source:", finalCase.DataSourceName);      // "Knowledge_ingestion_test"
-console.log("Title:", finalCase.pyLabel);                   // "Understanding Pega DX API"
-console.log("Abstract:", finalCase.Abstract);               // "A comprehensive guide..."
-console.log("Vector Store:", finalCase.VectorStoreCollectionName); // "knowledge"
-
-// Get detailed content view
-const authorView = await mcp__pega-dx-mcp__get_case_view({
-  caseID: "KB-1023",
-  viewID: "AuthorContent"
-});
-
-console.log("Chunks:", authorView.Chunks);  // [object Object],[object Object],[object Object]
-// Shows 3 chunks (each chunk is an object with Content property)
-```
-
-**Result**: Content successfully created with 3 text chunks, custom chunking parameters, and published to knowledge base.
-
----
-
-## Example 2: File Content with Simple Settings
-
-This example demonstrates the complete workflow for uploading a file with default chunking parameters.
-
-### Scenario
-
-- **Collection**: "knowledge" (DC-1)
-- **Data Source**: "Knowledge_ingestion_test" (SRC-1001)
-- **Settings**: Simple (default chunking)
-- **Content Format**: File (PDF document)
-- **File Path**: "/path/to/policy-document.pdf"
-- **Title**: "Company Policy Document"
-- **Abstract**: "Internal policies for employee handbook"
-
-### Step 0: Authenticate
-
-```javascript
-await mcp__pega-dx-mcp__authenticate_pega({});
-```
-
-### Steps 1-2: Query and User Selection
-
-(Same as Example 1, but user selects simple settings and file format)
-
-### Step 3: Create Case
-
-```javascript
-const createResponse = await mcp__pega-dx-mcp__create_case({
-  caseTypeID: "PegaFW-KB-Work-Article",
-  content: {}
-});
-
-const caseID = createResponse.caseID;  // "KB-1026"
-const createAssignmentID = createResponse.assignments[0].ID;
-```
-
-### Step 4: Configure (Simple Settings)
-
-```javascript
-await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1026!CREATEFORM_DEFAULT",
-  actionID: "Create",
-  content: {},  // No AdvancedSettings
-  pageInstructions: [
-    {
-      instruction: "UPDATE",
-      target: ".Collection",
-      content: {
-        CollectionName: "knowledge",
-        pyID: "DC-1",
-        pzInsKey: "PEGAFW-QNA-WORK DC-1"
-      }
-    },
-    {
-      instruction: "UPDATE",
-      target: ".Datasource",
-      content: {
-        Name: "Knowledge_ingestion_test",
-        pyID: "SRC-1001",
-        pzInsKey: "PEGAFW-QNA-WORK SRC-1001"
-      }
-    },
-    {
-      instruction: "APPEND",
+      content: { AccessRoleName: "KnowledgeBuddy:Admin" },
       target: ".ContentAccessConfigurations",
-      content: {
-        AccessRoleName: "KnowledgeBuddy:Public"
-      }
+      listIndex: 1,
+      instruction: "UPDATE"
+    },
+    {
+      target: ".ContentAccessConfigurations",
+      content: {},
+      listIndex: 2,
+      instruction: "INSERT"
+    },
+    {
+      content: { AccessRoleName: "KnowledgeBuddy:BuddyManager" },
+      target: ".ContentAccessConfigurations",
+      listIndex: 2,
+      instruction: "UPDATE"
     }
-    // No IndexParams - uses defaults (SIZE, 1000, 200)
   ]
-});
-
-// New assignment: ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1026!DRAFT_FLOW
+})
 ```
 
-### Step 5a: Upload File
+### Step 8: Refresh After Configuration
+
+```javascript
+mcp__pega-dx-mcp__refresh_case_view({
+  caseID: "PEGAFW-KB-WORK-ARTICLE KB-2021",
+  viewID: "pyDetailsTabContent"
+})
+```
+
+### Step 9: Author File Content
+
+User selects: Format="File", Title="Policy Document", Abstract="Company policies", FilePath="/path/to/policy.pdf"
+
+#### Step 9a: Upload File
 
 ```javascript
 const uploadResponse = await mcp__pega-dx-mcp__upload_attachment({
-  filePath: "/path/to/policy-document.pdf",
-  fileName: "policy-document.pdf"
-});
-
-const tempAttachmentID = uploadResponse.data.ID;  // e.g., "ATTACH-12345"
-console.log("Uploaded file, temporary ID:", tempAttachmentID);
+  filePath: "/path/to/policy.pdf",
+  appendUniqueIdToFileName: true
+})
+// Response: ID="8f93ae83-78a8-44b5-a603-b7bd12e087c5"
 ```
 
-### Step 5b: Refresh Assignment
+#### Step 9b: Refresh with Attachment
 
 ```javascript
 await mcp__pega-dx-mcp__refresh_assignment_action({
-  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1026!DRAFT_FLOW",
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2021!DRAFT_FLOW",
   actionID: "AuthorContent",
   content: {
-    Title: "Company Policy Document",
-    Abstract: "Internal policies for employee handbook",
-    ArticleType: "file"  // Critical: Sets to file mode
+    ArticleType: "file",
+    Title: "Policy Document",
+    Abstract: "Company policies"
   },
   pageInstructions: [{
-    instruction: "REPLACE",
     target: ".ContentAttachment",
-    content: { ID: tempAttachmentID }
+    content: { ID: "8f93ae83-78a8-44b5-a603-b7bd12e087c5" },
+    instruction: "REPLACE"
   }]
-});
-
-console.log("Refreshed assignment with ContentAttachment");
+})
 ```
 
-### Step 5c: Submit Action
+#### Step 9c: Submit with Attachment
 
 ```javascript
 await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-1026!DRAFT_FLOW",
+  assignmentID: "ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE KB-2021!DRAFT_FLOW",
   actionID: "AuthorContent",
+  viewType: "form",
   content: {
-    Title: "Company Policy Document",
-    Abstract: "Internal policies for employee handbook",
-    ArticleType: "file"  // Critical: Sets to file mode
+    ArticleType: "file",
+    Title: "Policy Document",
+    Abstract: "Company policies"
   },
   pageInstructions: [{
-    instruction: "REPLACE",
     target: ".ContentAttachment",
-    content: { ID: tempAttachmentID }  // MUST include in submit too!
+    content: { ID: "8f93ae83-78a8-44b5-a603-b7bd12e087c5" },
+    instruction: "REPLACE"
   }]
-});
-
-console.log("Submitted content for ingestion");
-// Case progresses to Ingestion stage, then Resolve stage
+})
 ```
 
-### Step 6: Verify Success
+### Step 10: Verify and Display
 
-```javascript
-const finalCase = await mcp__pega-dx-mcp__get_case({
-  caseID: "KB-1026"
-});
-
-// Verify final case state
-console.log("Case ID:", finalCase.pyID);                    // "KB-1026"
-console.log("Status:", finalCase.pyStatusWork);             // "Resolved-Published"
-console.log("Article Type:", finalCase.ArticleType);        // "file"
-console.log("Collection:", finalCase.CollectionName);       // "knowledge"
-console.log("Data Source:", finalCase.DataSourceName);      // "Knowledge_ingestion_test"
-console.log("Title:", finalCase.pyLabel);                   // "Company Policy Document"
-console.log("Extraction Method:", finalCase.ExtractionMethod); // "Standard"
-
-// Get content view to see ContentAttachment
-const authorView = await mcp__pega-dx-mcp__get_case_view({
-  caseID: "KB-1026",
-  viewID: "AuthorContent"
-});
-
-console.log("ContentAttachment:", authorView.ContentAttachment);  // [object Object]
-
-// Get case attachments to see uploaded file
-const attachments = await mcp__pega-dx-mcp__get_case_attachments({
-  caseID: "KB-1026"
-});
-
-console.log("Attachments:", attachments);
-// Shows:
-// - pyAttachName: "policy-document.pdf"
-// - pxObjClass: "Data-WorkAttach-File"
-```
-
-**Result**: File successfully uploaded, text extracted automatically, and content published to knowledge base with default chunking.
+Same as Example 1 - retrieve case summary and details, display to user.
 
 ---
 
-## Example 3: Simple Settings with Single Text Chunk
+## Key Patterns Summary
 
-This example shows the simplest possible workflow: single chunk of text with all defaults.
+### Collection and Data Source References
 
-### Complete Workflow
-
-```javascript
-// Step 0: Authenticate
-await mcp__pega-dx-mcp__authenticate_pega({});
-
-// Step 1-2: Query and User Selection (simplified)
-// User selects: collection "knowledge", datasource "Knowledge_ingestion_test", simple settings, text format, 1 chunk
-
-// Step 3: Create Case
-const createResponse = await mcp__pega-dx-mcp__create_case({
-  caseTypeID: "PegaFW-KB-Work-Article",
-  content: {}
-});
-
-// Step 4: Configure (Simple Settings)
-await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: createResponse.assignments[0].ID,
-  actionID: "Create",
-  content: {},
-  pageInstructions: [
-    {
-      instruction: "UPDATE",
-      target: ".Collection",
-      content: {
-        CollectionName: "knowledge",
-        pyID: "DC-1",
-        pzInsKey: "PEGAFW-QNA-WORK DC-1"
-      }
-    },
-    {
-      instruction: "UPDATE",
-      target: ".Datasource",
-      content: {
-        Name: "Knowledge_ingestion_test",
-        pyID: "SRC-1001",
-        pzInsKey: "PEGAFW-QNA-WORK SRC-1001"
-      }
-    },
-    {
-      instruction: "APPEND",
-      target: ".ContentAccessConfigurations",
-      content: { AccessRoleName: "KnowledgeBuddy:Public" }
-    }
-  ]
-});
-
-// Step 5: Author Single Chunk
-const authorResponse = await mcp__pega-dx-mcp__perform_assignment_action({
-  assignmentID: `ASSIGN-WORKLIST PEGAFW-KB-WORK-ARTICLE ${createResponse.caseID}!DRAFT_FLOW`,
-  actionID: "AuthorContent",
-  content: {
-    Title: "Quick Start Guide",
-    Abstract: "Getting started with the platform"
-  },
-  pageInstructions: [
-    {
-      instruction: "APPEND",
-      target: ".Chunks",
-      content: {
-        Content: "Welcome to the platform! This quick start guide will help you get up and running in minutes. First, sign in with your credentials. Then, explore the dashboard to familiarize yourself with the interface. Finally, create your first project to begin working."
-      }
-    }
-  ]
-});
-
-// Step 6: Verify
-const finalCase = await mcp__pega-dx-mcp__get_case({
-  caseID: createResponse.caseID
-});
-
-console.log("✅ Created:", finalCase.pyLabel, "-", finalCase.pyStatusWork);
-```
-
-**Result**: Simple content article with single chunk, all default settings, published successfully.
-
----
-
-## Key Patterns from Examples
-
-### Pattern 1: pzInsKey Format
-
-Always include space between class name and ID:
-```javascript
-pzInsKey: "PEGAFW-QNA-WORK DC-1"      // ✅ Correct
-pzInsKey: "PEGAFW-QNA-WORKDC-1"       // ❌ Wrong
-pzInsKey: "PEGAFW-QNA-WORK  DC-1"     // ❌ Wrong (double space)
-```
-
-### Pattern 2: PageInstructions for Embedded Pages
-
-Always use UPDATE with dot prefix:
+Always include all three fields:
 ```javascript
 {
-  instruction: "UPDATE",      // Not REPLACE
-  target: ".Collection",      // With dot prefix
+  pyID: "DC-1",  // or data source ID
+  pzInsKey: "PEGAFW-QNA-WORK DC-1"  // Class name + space + ID
+}
+```
+
+### Access Roles (Page List)
+
+Use INSERT+UPDATE+DELETE pattern:
+```javascript
+// For each role: INSERT empty, UPDATE with data
+{ target: ".ContentAccessConfigurations", content: {}, listIndex: N, instruction: "INSERT" },
+{ content: { AccessRoleName: "RoleName" }, target: ".ContentAccessConfigurations", listIndex: N, instruction: "UPDATE" }
+// Final: INSERT empty, DELETE to clean up
+{ target: ".ContentAccessConfigurations", content: {}, listIndex: N+1, instruction: "INSERT" },
+{ target: ".ContentAccessConfigurations", listIndex: N+1, instruction: "DELETE" }
+```
+
+### Advanced Settings
+
+Only include when `AdvancedSettings: true`:
+```javascript
+{
+  instruction: "UPDATE",
+  target: ".IndexParams",
   content: {
-    CollectionName: "...",
-    pyID: "...",
-    pzInsKey: "..."          // All three required
+    ChunkingMethod: "SIZE",
+    ChunkSize: 1000,
+    ChunkOverlap: 200
   }
 }
 ```
 
-### Pattern 3: PageInstructions for Page Lists
+### File Upload
 
-Always use APPEND with dot prefix:
+3-step process:
+1. Upload file → get attachment ID
+2. Refresh with pageInstructions
+3. Submit with same pageInstructions
+
+Both refresh and submit must include:
 ```javascript
-{
-  instruction: "APPEND",      // Not UPDATE or REPLACE
-  target: ".Chunks",          // With dot prefix
-  content: {
-    Content: "..."           // Property name is "Content" (capital C)
-  }
-}
+pageInstructions: [{
+  target: ".ContentAttachment",
+  content: { ID: attachmentID },
+  instruction: "REPLACE"
+}]
 ```
-
-### Pattern 4: File Upload Sequence
-
-Always follow 3-step process:
-```javascript
-// 1. Upload
-const { data: { ID } } = await upload_attachment({ filePath: "..." });
-
-// 2. Refresh
-await refresh_assignment_action({
-  ...,
-  pageInstructions: [{ instruction: "REPLACE", target: ".ContentAttachment", content: { ID } }]
-});
-
-// 3. Submit
-await perform_assignment_action({
-  ...,
-  pageInstructions: [{ instruction: "REPLACE", target: ".ContentAttachment", content: { ID } }]  // Same pageInstructions!
-});
-```
-
-### Pattern 5: Simple vs Advanced Settings
-
-```javascript
-// Simple (no IndexParams)
-content: {},
-pageInstructions: [
-  { Collection }, { Datasource }, { ContentAccessConfigurations }
-]
-
-// Advanced (with IndexParams)
-content: { AdvancedSettings: true },
-pageInstructions: [
-  { Collection }, { Datasource }, { IndexParams }, { ContentAccessConfigurations }
-]
-```
-
----
-
-## Testing Tips
-
-### Verify Each Step
-
-After each step, verify the result:
-- Step 3: Check caseID and assignmentID are returned
-- Step 4: Check case progresses to Draft stage
-- Step 5: Check case progresses to Ingestion/Resolve stage
-- Step 6: Check final status is "Resolved-Published"
-
-### Use get_case_view for Debugging
-
-```javascript
-// View configuration
-const createView = await mcp__pega-dx-mcp__get_case_view({
-  caseID: "KB-1023",
-  viewID: "Create"
-});
-console.log("Collection:", createView.Collection);
-console.log("Datasource:", createView.Datasource);
-console.log("IndexParams:", createView.IndexParams);
-
-// View content
-const authorView = await mcp__pega-dx-mcp__get_case_view({
-  caseID: "KB-1023",
-  viewID: "AuthorContent"
-});
-console.log("Title:", authorView.Title);
-console.log("Chunks:", authorView.Chunks);
-```
-
-### Common Values for Testing
-
-```javascript
-// Collection
-CollectionName: "knowledge"
-pyID: "DC-1"
-pzInsKey: "PEGAFW-QNA-WORK DC-1"
-
-// Data Source
-Name: "Knowledge_ingestion_test"
-pyID: "SRC-1001"
-pzInsKey: "PEGAFW-QNA-WORK SRC-1001"
-
-// Chunking (defaults)
-ChunkingMethod: "SIZE"
-ChunkSize: 1000
-ChunkOverlap: 200
-
-// Access Role
-AccessRoleName: "KnowledgeBuddy:Public"
-```
-
----
-
-## Related References
-
-- **[technical-details.md](./technical-details.md)** - Technical patterns and structures
-- **[default-settings.md](./default-settings.md)** - Simple vs advanced configuration
-- **[error-handling.md](./error-handling.md)** - Troubleshooting common issues
-- **[success-criteria.md](./success-criteria.md)** - Verification checklist
